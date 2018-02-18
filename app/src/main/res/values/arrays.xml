@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pattern_names">
+        <item>Glider</item>
+        <item>Lightweight Spaceship</item>
+        <item>F-Pentomino</item>
+        <item>Pulsator</item>
+        <item>Two Magnets</item>
+        <item>Ten Cell Row</item>
+        <item>Tumbler</item>
+        <item>Glider Gun</item>
+    </string-array>
+</resources>

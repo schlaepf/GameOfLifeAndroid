@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:color="#000000"
+    tools:context="apps.phil.gameoflife.activities.MainActivity">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rl_ui_board"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:color="#000000">
+
+        <apps.phil.gameoflife.view.UIBoard
+            android:id="@+id/ui_board_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+    <!--TODO set Background to black -->
+    <android.support.constraint.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_generation"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_toStartOf="@+id/iv_pause_run"
+            android:contentDescription="@string/reload"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar_speed"
+            app:layout_constraintEnd_toStartOf="@+id/iv_pause_run"
+            app:srcCompat="@drawable/ic_refresh_white_48dp" />
+
+        <ImageView
+            android:id="@+id/iv_pause_run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_generation"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/pause"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar_speed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
+
+        <TextView
+            android:id="@+id/tv_generation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/seekBar_speed"
+            android:layout_alignStart="@+id/tv_label_speed"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/gen_zero"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_label_speed"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Generation: xy" />
+
+        <TextView
+            android:id="@+id/tv_label_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/seekBar_speed"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/speed"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <SeekBar
+            android:id="@+id/seekBar_speed"
+            style="@style/customSeekbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/iv_pause_run"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/tv_label_speed"
+            android:maxHeight="20dp"
+            android:minHeight="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_label_speed" />
+
+        <ImageView
+            android:id="@+id/iv_pattern"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/patterns"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar_speed"
+            app:layout_constraintEnd_toStartOf="@+id/iv_reload"
+            app:srcCompat="@drawable/ic_pattern_white_48dp" />
+    </android.support.constraint.ConstraintLayout>
+
+
+</RelativeLayout>

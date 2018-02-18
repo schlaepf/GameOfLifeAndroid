@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Game of Life</string>
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+    <string name="speed">Speed</string>
+    <string name="gen_zero">Generation: 0</string>
+    <string name="patterns">Patterns</string>
+    <string name="pattern_list_fragment_title">Choose a pattern</string>
+    <string name="pattern_pref">preferences_pattern</string>
+    <string name="pattern_pref_id">preferences_pattern_id</string>
+    <string name="reload">Reload</string>
+</resources>
