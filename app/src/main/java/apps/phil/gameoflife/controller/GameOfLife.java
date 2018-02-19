@@ -137,7 +137,7 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     }
 
     private boolean isOrganismDead() {
-        return changedCells.size() <= 0;
+        return changedCells.size() == 0;
     }
 
     private void replaceOldFieldWithNewField() {
@@ -285,8 +285,8 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
         setCells(pattern.getField());
         generation = 0;
         notifyGenerationObservers();
-        ui.updateWholeField(field);
         clearChangedCells();
+        ui.updateWholeField(field);
     }
 
     public static GameOfLife getInstance() {
@@ -317,6 +317,8 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
             mainActivity.runOnUiThread(() -> observer.updateGameRunning(running, paused));
         }
     }
+
+    //TODO make the linked list of changed cells thread safe
 
     @Override
     public void updateCellClickObserver(int row, int column) {
