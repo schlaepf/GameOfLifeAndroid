@@ -5,6 +5,7 @@ import android.app.Activity;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import apps.phil.gameoflife.cellpatterns.CellPattern;
 import apps.phil.gameoflife.model.Cell;
@@ -45,11 +46,12 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     private ArrayList<GameRunningObserver> gameRunningObservers;
 
     // changed cells
-    private LinkedList<Cell> changedCells;
+    //private LinkedList<Cell> changedCells;
+    private LinkedBlockingQueue<Cell> changedCells;
 
     public GameOfLife(UIBoard ui, int initialCellsAlive, Activity mainActivity, int pauseTime) {
         this.ui = ui;
-        changedCells = new LinkedList<>();
+        changedCells = new LinkedBlockingQueue<>();
         ui.registerCellClick(this);
         this.pauseTime = pauseTime;
         paused = false;

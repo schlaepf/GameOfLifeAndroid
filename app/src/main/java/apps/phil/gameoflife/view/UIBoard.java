@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import apps.phil.gameoflife.model.Cell;
 import apps.phil.gameoflife.util.CellSizeInvestigator;
@@ -47,7 +48,7 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
 
     private ArrayList<CellClickObserver> cellClickObservers;
 
-    private LinkedList<Cell> updatedCells;
+    private LinkedBlockingQueue<Cell> updatedCells;
 
     public UIBoard(Context context, AttributeSet attributeSet) {
         super(context,attributeSet);
@@ -67,7 +68,7 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
         colorDead = new Paint();
         colorDead.setColor(Color.argb(255, 53,53,53));
         colorDead.setStyle(Paint.Style.FILL);
-        updatedCells = new LinkedList<>();
+        updatedCells = new LinkedBlockingQueue<>();
     }
 
     private void initialize() {
@@ -86,9 +87,9 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
         }
     }
 
-    public void update(LinkedList<Cell> updatedCells) {
+    public synchronized void update(LinkedBlockingQueue<Cell> updatedCells) {
         while(updatedCells.size() > 0) {
-            Cell cell = updatedCells.removeFirst();
+            Cell cell = updatedCells.remove();
             grid[cell.getY()][cell.getX()].setIsAlive(cell.isAlive());
         }
         this.updatedCells = updatedCells;
