@@ -129,11 +129,11 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(Config.KEY_PATTERN)) {
             String pattern = PreferenceManager.getDefaultSharedPreferences(this).getString(Config.KEY_PATTERN, "");
-            PatternDisposer patternDisposer = PatternDisposer.getInstance(this);
-            gameOfLife.showPattern(patternDisposer.getPattern(pattern));
             // clear preference, so that the next time the user clicks on a pattern, this method will
             // be fired again
             PreferenceManager.getDefaultSharedPreferences(this).edit().clear().commit();
+            PatternDisposer patternDisposer = new PatternDisposer(this);
+            gameOfLife.showPattern(patternDisposer.getPattern(pattern));
         }
     }
 

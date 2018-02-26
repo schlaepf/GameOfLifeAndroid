@@ -12,9 +12,6 @@ import apps.phil.gameoflife.R;
 
 public class PatternDisposer {
 
-    // Singleton
-    private static PatternDisposer instance;
-
     private HashMap<String, CellPattern> patterns;
 
     private Context context;
@@ -37,15 +34,8 @@ public class PatternDisposer {
         patterns.put(context.getResources().getStringArray(R.array.pattern_names)[7], new GliderGun());
     }
 
-    // Singleton
-    public static PatternDisposer getInstance(Context context) {
-        if(instance == null) {
-            instance = new PatternDisposer(context);
-        }
-        return instance;
-    }
-
     public CellPattern getPattern(String pattern) {
+
         return patterns.get(pattern);
     }
 }

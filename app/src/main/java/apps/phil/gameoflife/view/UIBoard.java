@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import apps.phil.gameoflife.controller.CellClickUpdater;
 import apps.phil.gameoflife.controller.GameOfLife;
 import apps.phil.gameoflife.model.Cell;
 import apps.phil.gameoflife.util.CellSizeInvestigator;
@@ -45,17 +46,17 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
 
     CellSizeInvestigator cellSizeInvestigator;
 
+    private CellClickUpdater updater;
 
     public UIBoard(Context context, AttributeSet attributeSet) {
         super(context,attributeSet);
         this.context = context;
         cellSizeInvestigator = new CellSizeInvestigator(context);
-
+        updater = CellClickUpdater.getInstance();
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
         initialize();
         rect = new Rect();
-
         colorAlive = new Paint();
         colorAlive.setColor(Color.MAGENTA);
         colorAlive.setStyle(Paint.Style.FILL);
@@ -157,7 +158,6 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
         // Calls the super implementation, which generates an AccessibilityEvent
         // and calls the onClick() listener on the view, if any
         super.performClick();
-
         // Handle the action for the custom click here
         return true;
     }
@@ -174,6 +174,8 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void notifyControllerOfClick(int row, int column) {
-        GameOfLife.getInstance().reviveCell(row, column);
+        Thread threadCellClickUpdater = new Thread(updater);
+        updater.setNewCoordinates(row, column);
+        threadCellClickUpdater.start();
     }
 }
