@@ -146,10 +146,16 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int column = (int)event.getX()/sizeOfSquare;
-        int row = (int)event.getY()/sizeOfSquare;
-        notifyCellClickObservers(row, column);
-        performClick();
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                int column = (int)event.getX()/sizeOfSquare;
+                int row = (int)event.getY()/sizeOfSquare;
+                notifyCellClickObservers(row, column);
+                performClick();
+                break;
+            default:
+                break;
+        }
         return super.onTouchEvent(event);
     }
 

@@ -3,7 +3,6 @@ package apps.phil.gameoflife.controller;
 import android.app.Activity;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -46,7 +45,6 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     private ArrayList<GameRunningObserver> gameRunningObservers;
 
     // changed cells
-    //private LinkedList<Cell> changedCells;
     private LinkedBlockingQueue<Cell> changedCells;
 
     public GameOfLife(UIBoard ui, int initialCellsAlive, Activity mainActivity, int pauseTime) {
@@ -108,7 +106,11 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
                     }
                     // if the state of the cell has changed, add it to the list of changed cells
                     if(field[row][column].isAlive() != newField[row][column].isAlive()) {
-                        changedCells.add(newField[row][column]);
+                        try {
+                            changedCells.put(newField[row][column]);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -132,14 +134,29 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     }
 
     private void checkOrganismDead() {
-        if(isOrganismDead()) {
-            running = false;
-            notifyGameRunningObservers();
-        }
-    }
+        new Thread() {
+            @Override
+            public void run() {
+                if(isOrganismDead()) {
+                    running = false;
+                    notifyGameRunningObservers();
+                }
+            }
 
-    private boolean isOrganismDead() {
-        return changedCells.size() == 0;
+            private boolean isOrganismDead() {
+                boolean isDead = true;
+                for(int row = 0; row < field.length; row++) {
+                    for(int column = 0; column < field[row].length; column++) {
+                        if(field[row][column].isAlive()) {
+                            isDead = false;
+                            return isDead;
+                        }
+                    }
+                }
+                return isDead;
+            }
+        }.start();
+
     }
 
     private void replaceOldFieldWithNewField() {
@@ -182,18 +199,18 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     }
 
     private int getNumberOfLivingNeighbours(int row, int column) {
-        int anzahlLebendeNachbarn = 0;
+        int numberOfNeighboursAlive = 0;
 
-        anzahlLebendeNachbarn += getNeighbour(row - 1, column - 1);
-        anzahlLebendeNachbarn += getNeighbour(row - 1, column);
-        anzahlLebendeNachbarn += getNeighbour(row - 1, column + 1);
-        anzahlLebendeNachbarn += getNeighbour(row, column - 1);
-        anzahlLebendeNachbarn += getNeighbour(row, column + 1);
-        anzahlLebendeNachbarn += getNeighbour(row + 1, column - 1);
-        anzahlLebendeNachbarn += getNeighbour(row + 1, column);
-        anzahlLebendeNachbarn += getNeighbour(row + 1, column + 1);
+        numberOfNeighboursAlive += getNeighbour(row - 1, column - 1);
+        numberOfNeighboursAlive += getNeighbour(row - 1, column);
+        numberOfNeighboursAlive += getNeighbour(row - 1, column + 1);
+        numberOfNeighboursAlive += getNeighbour(row, column - 1);
+        numberOfNeighboursAlive += getNeighbour(row, column + 1);
+        numberOfNeighboursAlive += getNeighbour(row + 1, column - 1);
+        numberOfNeighboursAlive += getNeighbour(row + 1, column);
+        numberOfNeighboursAlive += getNeighbour(row + 1, column + 1);
 
-        return anzahlLebendeNachbarn;
+        return numberOfNeighboursAlive;
     }
 
     private int getNeighbour(int rowOfNeighbour, int columnOfNeighbour) {
@@ -251,10 +268,14 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     public void handleRefresh() {
         initializeFields();
         setCells();
-        generation = 0;
+        resetGeneration();
         notifyGenerationObservers();
         ui.updateWholeField(field);
         clearChangedCells();
+    }
+
+    private void resetGeneration() {
+        generation = 0;
     }
 
     private void clearChangedCells() {
@@ -285,7 +306,7 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     public void showPattern(CellPattern pattern) {
         initializeFields();
         setCells(pattern.getField());
-        generation = 0;
+        resetGeneration();
         notifyGenerationObservers();
         clearChangedCells();
         ui.updateWholeField(field);
@@ -320,13 +341,15 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
         }
     }
 
-    //TODO make the linked list of changed cells thread safe
-
     @Override
     public void updateCellClickObserver(int row, int column) {
         Cell revivedCell = field[row][column];
         revivedCell.setIsAlive(true);
-        changedCells.add(revivedCell);
+        try {
+            changedCells.put(revivedCell);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         ui.update(changedCells);
     }
 }

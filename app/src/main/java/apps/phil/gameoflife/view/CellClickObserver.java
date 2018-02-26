@@ -5,5 +5,5 @@ package apps.phil.gameoflife.view;
  */
 
 public interface CellClickObserver {
-    public void updateCellClickObserver(int row, int column);
+    void updateCellClickObserver(int row, int column);
 }
