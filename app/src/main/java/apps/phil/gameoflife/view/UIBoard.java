@@ -11,10 +11,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import apps.phil.gameoflife.controller.GameOfLife;
 import apps.phil.gameoflife.model.Cell;
 import apps.phil.gameoflife.util.CellSizeInvestigator;
 
@@ -22,7 +21,7 @@ import apps.phil.gameoflife.util.CellSizeInvestigator;
  * Created by phil on 28.01.18.
  */
 
-public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, CellClickObservable {
+public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
 
     //TODO make this view render in layout preview
     // --> https://developer.android.com/training/custom-views/create-view.html
@@ -46,13 +45,9 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
 
     CellSizeInvestigator cellSizeInvestigator;
 
-    private ArrayList<CellClickObserver> cellClickObservers;
-
-    private LinkedBlockingQueue<Cell> updatedCells;
 
     public UIBoard(Context context, AttributeSet attributeSet) {
         super(context,attributeSet);
-        cellClickObservers = new ArrayList<>();
         this.context = context;
         cellSizeInvestigator = new CellSizeInvestigator(context);
 
@@ -68,7 +63,6 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
         colorDead = new Paint();
         colorDead.setColor(Color.argb(255, 53,53,53));
         colorDead.setStyle(Paint.Style.FILL);
-        updatedCells = new LinkedBlockingQueue<>();
     }
 
     private void initialize() {
@@ -92,7 +86,6 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
             Cell cell = updatedCells.remove();
             grid[cell.getY()][cell.getX()].setIsAlive(cell.isAlive());
         }
-        this.updatedCells = updatedCells;
         updateCanvas();
         invalidate();
     }
@@ -150,7 +143,7 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
             case MotionEvent.ACTION_DOWN:
                 int column = (int)event.getX()/sizeOfSquare;
                 int row = (int)event.getY()/sizeOfSquare;
-                notifyCellClickObservers(row, column);
+                notifyControllerOfClick(row, column);
                 performClick();
                 break;
             default:
@@ -180,20 +173,7 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback, Cell
         setMeasuredDimension(CellSizeInvestigator.getScreenWidth() ,cellSizeInvestigator.getUpperScreenHeight());
     }
 
-    @Override
-    public void registerCellClick(CellClickObserver observer) {
-        cellClickObservers.add(observer);
-    }
-
-    @Override
-    public void unregisterCellClick(CellClickObserver observer) {
-        cellClickObservers.remove(observer);
-    }
-
-    @Override
-    public void notifyCellClickObservers(int row, int column) {
-        for(CellClickObserver observer : cellClickObservers) {
-            observer.updateCellClickObserver(row, column);
-        }
+    public void notifyControllerOfClick(int row, int column) {
+        GameOfLife.getInstance().reviveCell(row, column);
     }
 }

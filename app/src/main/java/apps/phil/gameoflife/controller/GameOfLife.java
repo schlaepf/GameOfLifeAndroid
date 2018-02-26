@@ -13,10 +13,9 @@ import apps.phil.gameoflife.model.GameRunningObserver;
 import apps.phil.gameoflife.model.GenerationObservable;
 import apps.phil.gameoflife.model.GenerationObserver;
 import apps.phil.gameoflife.util.CellSizeInvestigator;
-import apps.phil.gameoflife.view.CellClickObserver;
 import apps.phil.gameoflife.view.UIBoard;
 
-public class GameOfLife implements Runnable, GenerationObservable, GameRunningObservable, CellClickObserver {
+public class GameOfLife implements Runnable, GenerationObservable, GameRunningObservable {
 
     private static final String TAG = "GameOfLifeController";
 
@@ -50,7 +49,6 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     public GameOfLife(UIBoard ui, int initialCellsAlive, Activity mainActivity, int pauseTime) {
         this.ui = ui;
         changedCells = new LinkedBlockingQueue<>();
-        ui.registerCellClick(this);
         this.pauseTime = pauseTime;
         paused = false;
         pauseLock = new Object();
@@ -341,8 +339,7 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
         }
     }
 
-    @Override
-    public void updateCellClickObserver(int row, int column) {
+    public void reviveCell(int row, int column) {
         Cell revivedCell = field[row][column];
         revivedCell.setIsAlive(true);
         try {
