@@ -1,6 +1,7 @@
 package apps.phil.gameoflife.controller;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -340,6 +341,8 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
     }
 
     public void reviveCell(int row, int column) {
+        Log.d(TAG, "row: " + row);
+        Log.d(TAG, "column: " + column);
         Cell revivedCell = field[row][column];
         revivedCell.setIsAlive(true);
         try {

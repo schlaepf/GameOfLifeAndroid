@@ -1,7 +1,10 @@
 package apps.phil.gameoflife.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -11,36 +14,46 @@ import android.view.WindowManager;
 
 public class CellSizeInvestigator {
 
-    // given: one row consists of 100 cells, the game of life board takes two thirds of the screen
+
+
+    // given: one cell takes 10 pixels height and width, the game of life board takes two thirds of the screen
     // height and the controls take one third of the screen height -> the rest is calculated based
     // on these facts
 
-    private static float SCREEN_DIVIDE_UPPER = 2/3f;
-    private static float SCREEN_DIVIDE_LOWER = 1/3f;
-    private static int CELLS_PER_ROW = 100;
+    private static String TAG = "CellSizeInvestigator";
+
+    private static int SCREEN_DIVIDER = 3;
+    private static int SCREEN_UPPER = 2;
+    private static int SCREEN_LOWER = 1;
 
     private static int screenWidth;
     private static int totalScreenHeight;
     private static int screenHeightUpper;
     private static int screenHeightLower;
     private static int cellsPerColumn;
+    private static int cellsPerRow;
 
-    private static int cellSize;
+    private static int cellSize = 10;       // cell size in pixel
+
 
     private WindowManager wm;
 
+    private Context context;
+
     public CellSizeInvestigator(Context context) {
+        this.context = context;
         wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         setScreenWidth();
         setTotalScreenHeight();
-        setOptimalCellSize();
         setScreenHeightLower();
         setScreenHeightUpper();
         setCellsPerColumn();
-    }
+        setCellsPerRow();
 
-    private void setOptimalCellSize() {
-        cellSize = screenWidth / CELLS_PER_ROW;
+        Log.d(TAG, "total height " + totalScreenHeight);
+        Log.d(TAG, "height " + screenHeightUpper);
+        Log.d(TAG, "row " + cellsPerRow);
+        Log.d(TAG, "column " + cellsPerColumn);
     }
 
     public static int getOptimalCellSize() {
@@ -48,7 +61,7 @@ public class CellSizeInvestigator {
     }
 
     private void setScreenHeightLower() {
-        screenHeightLower = (int) ((float)totalScreenHeight*SCREEN_DIVIDE_LOWER);
+        screenHeightLower = totalScreenHeight/SCREEN_DIVIDER;
     }
 
     public int getLowerScreenHeight() {
@@ -56,7 +69,7 @@ public class CellSizeInvestigator {
     }
 
     private void setScreenHeightUpper() {
-        screenHeightUpper = (int) ((float)totalScreenHeight*SCREEN_DIVIDE_UPPER);
+        screenHeightUpper = (totalScreenHeight/SCREEN_DIVIDER)*SCREEN_UPPER;
     }
 
     public int getUpperScreenHeight() {
@@ -65,6 +78,10 @@ public class CellSizeInvestigator {
 
     private void setCellsPerColumn() {
         cellsPerColumn = screenHeightUpper/cellSize;
+    }
+
+    private void setCellsPerRow() {
+        cellsPerRow = screenWidth / cellSize;
     }
 
     public static int getCellsPerColumn() {
@@ -79,14 +96,14 @@ public class CellSizeInvestigator {
     }
 
     private void setTotalScreenHeight() {
-        Display display = wm.getDefaultDisplay();
-        Point p = new Point();
-        display.getSize(p);
-        totalScreenHeight = p.y;
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        totalScreenHeight = displayMetrics.heightPixels;
+        screenWidth = displayMetrics.widthPixels;
     }
 
     public static int getCellsPerRow() {
-        return CELLS_PER_ROW;
+        return cellsPerRow;
     }
 
     public static int getScreenWidth() {

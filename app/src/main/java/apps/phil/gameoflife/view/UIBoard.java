@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 import apps.phil.gameoflife.controller.CellClickUpdater;
 import apps.phil.gameoflife.controller.GameOfLife;
@@ -35,6 +36,7 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
 
     private Paint colorAlive;
     private Paint colorDead;
+    private Paint backgroundColor;
 
     private Context context;
 
@@ -50,6 +52,7 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
 
     public UIBoard(Context context, AttributeSet attributeSet) {
         super(context,attributeSet);
+        getHolder().addCallback(this);
         this.context = context;
         cellSizeInvestigator = new CellSizeInvestigator(context);
         updater = CellClickUpdater.getInstance();
@@ -64,21 +67,29 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
         colorDead = new Paint();
         colorDead.setColor(Color.argb(255, 53,53,53));
         colorDead.setStyle(Paint.Style.FILL);
+
+        backgroundColor = new Paint();
+        backgroundColor.setColor(Color.BLACK);
+        backgroundColor.setStyle(Paint.Style.FILL);
     }
 
     private void initialize() {
         grid = new Cell[CellSizeInvestigator.getCellsPerRow()][CellSizeInvestigator.getCellsPerColumn()];
+        Log.d(TAG, "rows: " + CellSizeInvestigator.getCellsPerRow());
+        Log.d(TAG, "columns: " + CellSizeInvestigator.getCellsPerColumn());
+        Log.d(TAG, "cell size: " + CellSizeInvestigator.getOptimalCellSize());
         int x = 0;
         int y = 0;
         sizeOfSquare = CellSizeInvestigator.getOptimalCellSize();
+
         for(int row = 0; row < grid.length; row++) {
             for(int column = 0; column < grid[row].length; column++) {
                 Cell square = new Cell(x,y, false, sizeOfSquare);
                 grid[row][column] = square;
-                x+=sizeOfSquare;
+                y+=sizeOfSquare;
             }
-            y += sizeOfSquare;
-            x = 0;
+            x += sizeOfSquare;
+            y = 0;
         }
     }
 
@@ -142,8 +153,8 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                int column = (int)event.getX()/sizeOfSquare;
-                int row = (int)event.getY()/sizeOfSquare;
+                int column = (int)event.getY()/sizeOfSquare;
+                int row = (int)event.getX()/sizeOfSquare;
                 notifyControllerOfClick(row, column);
                 performClick();
                 break;
@@ -170,7 +181,8 @@ public class UIBoard extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(CellSizeInvestigator.getScreenWidth() ,cellSizeInvestigator.getUpperScreenHeight());
+        int cellSize = CellSizeInvestigator.getOptimalCellSize();
+        setMeasuredDimension(CellSizeInvestigator.getCellsPerRow()*cellSize ,CellSizeInvestigator.getCellsPerColumn()*cellSize);
     }
 
     public void notifyControllerOfClick(int row, int column) {
