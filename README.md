@@ -21,6 +21,9 @@ couple of generations.
 You can revive cells by just clicking on them. The best thing to do is to pause the simulation so you can take your time.
 Otherwise you have to be really fast to see an effect. (Like really, really fast.)
 
+## Example
+![ezgif com-video-to-gif 1](https://user-images.githubusercontent.com/18100041/45585895-3160fd80-b8ed-11e8-820d-2047a5360a79.gif)
+
 ## Final notes
 If you have any suggestions to make the app better, feel free to open an issue. Of course you can also make a pull request
 after you've changed something.
