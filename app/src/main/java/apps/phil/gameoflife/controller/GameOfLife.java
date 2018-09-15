@@ -61,6 +61,7 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
         newField = new Cell[numberOfRows][numberOfColumns];
         initializeFields();
         setCells();
+        ui.updateWholeField(field);
     }
 
     private void initObservers() {
