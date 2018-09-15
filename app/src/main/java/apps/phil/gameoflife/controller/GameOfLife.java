@@ -215,12 +215,12 @@ public class GameOfLife implements Runnable, GenerationObservable, GameRunningOb
 
     private int getNeighbour(int rowOfNeighbour, int columnOfNeighbour) {
         int neighbourAlive = 0;
-        try {
-            if(field[rowOfNeighbour][columnOfNeighbour].isAlive()){
-                neighbourAlive = 1;
+        if(rowOfNeighbour > 0 && rowOfNeighbour < field.length) {
+            if(columnOfNeighbour > 0 && columnOfNeighbour < field[rowOfNeighbour].length) {
+                if (field[rowOfNeighbour][columnOfNeighbour].isAlive()) {
+                    neighbourAlive = 1;
+                }
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-
         }
         return neighbourAlive;
     }
